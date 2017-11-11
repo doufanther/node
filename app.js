@@ -1,57 +1,44 @@
-var express=require('express');
-var app =express();
+//首先，得安装mysql,express,body-parser，path这些依赖
+const mysql = require('mysql');
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
 
-//设置跨域访问
-app.all('*', function(req, res, next) {
-   res.header("Access-Control-Allow-Origin", "*");
-   res.header("Access-Control-Allow-Headers", "X-Requested-With");
-   res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
-   res.header("X-Powered-By",' 3.2.1');
-   res.header("Content-Type", "application/json;charset=utf-8");
-   next();
+const app = express();
+
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+
+// 主要的路由用来返回　HTML file
+app.get('/', function (req, res) {
+  res.sendFile(path.resolve('./public/index.html'));
 });
-
-var questions=[
-{
-data:213,
-num:444,
-age:12
-},
-{
-data:456,
-num:678,
-age:13
-},
-{
-data:6666,
-num:66666,
-age:666666
-}
-];
-var user=[
-	{
-		name:'隔壁老王',
-		phone:'157566666'
-	},
-	{
-		name:'张无忌',
-		phone:'15727802745'
-	}
-]
-//写个接口123
-app.get('/123',function(req,res){
-res.status(200),
-res.json(questions)
+//初始化数据库配置
+const connection = mysql.createConnection({
+  host     : '192.168.2.199',       
+  user     : 'root',              
+  password : '123456',       
+  port: '3306',                   
+  database: 'test', 
 });
-
-app.get('/user',function(req,res){
-res.status(200),
-res.json(user)
+//连接数据库
+connection.connect(function (err) {
+  if (err) {
+    console.log("err" + err.stack);
+    return;
+  }
+  console.log("connection id" + connection.threadId);
 });
-
-//配置服务端口
-var server = app.listen(3000, function () {
-var host = server.address().address;
- var port = server.address().port;
-    console.log('Example app listening at http://%s:%s', host, port);
-})
+//增加一个user
+app.post('/insert-user', function (req, res) {
+  connection.query('insert into `user` set ?',req.body,
+      function (err, result) {
+        if (err) throw err;
+        res.send('User added to database with ID: ' + result.insertId);
+      }
+  );
+});
+//监听3000端口号
+app.listen(3000, function () {
+  console.log("app is listening");
+});
