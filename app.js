@@ -28,11 +28,25 @@ num:66666,
 age:666666
 }
 ];
-
+var user=[
+	{
+		name:'隔壁老王',
+		phone:'157566666'
+	},
+	{
+		name:'张无忌',
+		phone:'15727802745'
+	}
+]
 //写个接口123
 app.get('/123',function(req,res){
 res.status(200),
 res.json(questions)
+});
+
+app.get('/user',function(req,res){
+res.status(200),
+res.json(user)
 });
 
 //配置服务端口
