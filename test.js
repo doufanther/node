@@ -3,9 +3,10 @@ var mysql  = require('mysql');
 //接口
 var express=require('express');
 var app =express();
-
+//app.use(bodyParser.urlencoded({ extended: false }));  
 //设置跨域访问
 app.all('*', function(req, res, next) {
+	req.body=666666;
    res.header("Access-Control-Allow-Origin", "*");
    res.header("Access-Control-Allow-Headers", "X-Requested-With");
    res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
@@ -24,9 +25,21 @@ var connection = mysql.createConnection({
 }); 
  
 connection.connect();
- 
-var  sql = 'SELECT * FROM user';
+var qs = require('querystring'); 
+var data = { 
+    a: 123, 
+  }
+   
+   
+var content = qs.stringify(data); 
+app.get('/123'+content,function(req,res){
+		var  sql = 'SELECT * FROM user';
 //查
+		console.log(req.body);
+		 //var user_name=req.body.user;  
+//		  var password=req.body.password;  
+//		  console.log("User name = "+user_name+", password is "+password);  
+//		  res.end("yes");  
 connection.query(sql,function (err, result) {
         if(err){
           console.log('[SELECT ERROR] - ',err.message);
@@ -37,14 +50,12 @@ connection.query(sql,function (err, result) {
        console.log(result);
        var questions=result;
        //写个接口123
-		app.get('/123',function(req,res){
 		res.status(200),
 		res.json(questions)
-		});
 
        console.log('------------------------------------------------------------\n\n');  
+	});
 });
- 
 
 //增
 
@@ -62,8 +73,11 @@ app.post('/add',function(req,res){
        //console.log('INSERT ID:',result.insertId);        
        console.log('INSERT ID:',result);        
        console.log('-----------------------------------------------------------------\n\n');  
+	});
 });
-});
+
+
+
 //配置服务端口
 var server = app.listen(3000, function () {
 var host = server.address().address;
@@ -72,4 +86,4 @@ var host = server.address().address;
 })
 
 
-connection.end();
+//connection.end();
