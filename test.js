@@ -6,7 +6,7 @@ var app =express();
 //app.use(bodyParser.urlencoded({ extended: false }));  
 //设置跨域访问
 app.all('*', function(req, res, next) {
-	req.body=666666;
+	//req.body=666666;
    res.header("Access-Control-Allow-Origin", "*");
    res.header("Access-Control-Allow-Headers", "X-Requested-With");
    res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
@@ -17,25 +17,22 @@ app.all('*', function(req, res, next) {
 
 
 var connection = mysql.createConnection({     
-  host     : '192.168.2.199',       
+  host     : 'localhost',       
   user     : 'root',              
   password : '123456',       
   port: '3306',                   
-  database: 'test', 
+  database: 'tpshop', 
 }); 
  
 connection.connect();
-var qs = require('querystring'); 
-var data = { 
-    a: 123, 
-  }
-   
-   
-var content = qs.stringify(data); 
-app.get('/123'+content,function(req,res){
-		var  sql = 'SELECT * FROM user';
+
+
+app.get('/user/:id',function(req,res){
+		var id=req.params.id;
+		console.log(id);
+		var  sql = 'SELECT * FROM tp_store where id='+id;
 //查
-		console.log(req.body);
+		
 		 //var user_name=req.body.user;  
 //		  var password=req.body.password;  
 //		  console.log("User name = "+user_name+", password is "+password);  
