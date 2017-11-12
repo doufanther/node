@@ -54,6 +54,38 @@ connection.query(sql,function (err, result) {
 	});
 });
 
+//登陆
+app.get('/login/:phone/:password',function(req,res){
+		var phone=req.params.phone;
+		var password=req.params.password;
+//		console.log(id);
+		var sql="select * from tp_users where mobile = '"+phone+"' and password = '"+password+"'"
+		
+		
+		 //var user_name=req.body.user;  
+//		  var password=req.body.password;  
+//		  console.log("User name = "+user_name+", password is "+password);  
+//		  res.end("yes");  
+		connection.query(sql,function (err, result) {
+        if(err){
+          console.log('[SELECT ERROR] - ',err.message);
+          return;
+        }
+ 
+       console.log('--------------------------SELECT----------------------------');
+       console.log(result);
+       var questions=result;
+       //写个接口123
+		res.status(200),
+		res.json(questions)
+
+       console.log('------------------------------------------------------------\n\n');  
+	});
+});
+
+
+
+
 //增
 
 app.post('/add',function(req,res){
